@@ -1,0 +1,47 @@
+﻿<Window x:Class="NauticalChartsViewer.BuildingIndexWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        SizeToContent="Height"
+        xmlns:local="clr-namespace:NauticalChartsViewer"
+        Title="Build Index"
+        Width="455">
+    <Window.Resources>
+        <local:BooleanToVisibilityValueConverter x:Key="booleanToVisibilityValueConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Content="FileName:" Grid.Row="0" />
+        <TextBox Text="{Binding FileName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" IsReadOnly="True" Grid.ColumnSpan="2" Margin="0 0 42 0" />
+
+        <Button Grid.Column="2" Style="{StaticResource OperationButtonStyle}" Width="30" Content="..." Command="{Binding BrowseCommand}" VerticalAlignment="Center" Margin="10 0 6 0" HorizontalAlignment="Right" />
+
+        <Label Content="Index FileName:" Grid.Row="1" />
+        <TextBox Text="{Binding IndexFileName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" IsReadOnly="True" Margin="0 0 6 0" />
+
+        <Line Grid.Row="3" Grid.ColumnSpan="3" Stroke="{StaticResource DefaultSeparatorBrush}" Stretch="Fill" X2="1" Margin="6,5,6,0" />
+
+        <CheckBox IsChecked="{Binding Rebuild}" Grid.Row="4" Grid.Column="0" Content="Rebuild" VerticalAlignment="Center" Margin="9,5,0,0" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2">
+            <Button  HorizontalAlignment="Right"  Style="{StaticResource OperationButtonStyle}" Content="OK" Command="{Binding BuildCommand}" Margin="0 8 11 8" />
+            <Button  HorizontalAlignment="Right"  Style="{StaticResource OperationButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" Margin="0 8 6 8" />
+        </StackPanel>
+
+        <local:BusyIndicator BusyMessage="Build Index..." Grid.Row="4" Grid.Column="1"  VerticalAlignment="Center" Visibility="{Binding IsProgressBarVisible, Converter={StaticResource booleanToVisibilityValueConverter}}" />
+    </Grid>
+</Window>

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+isCheckable indicate if the MenuItem can checkable.
+-->
+<menuSet>
+  <menu header="FILE">
+    <menuItems>
+      <menuItem header="Open..." action="loadcharts" groupName="loadcharts" />
+      <menuItem header="Close" action="unloadcharts" groupName="unloadcharts" />
+      <separator />
+      <menuItem header="Create Symbol File" action="createsymbols" groupName="createsymbols" />
+      <menuItem header="Edit Symbol File" action="editsymbols" groupName="editsymbols" />
+      <separator />
+      <menuItem header="Build Index" action="buildindex" groupName="buildindex" />
+      <separator />
+      <menuItem header="Exit" action="exit" groupName="exit" />
+    </menuItems>
+  </menu>
+
+  <menu header="LAYERS">
+    <menuItems>
+      <menuItem header="Change Opacity..." action="changechartsopacity" groupName="chartopacity" />
+      <separator />
+      <menuItem header="Show Graticule" action="graticule" groupName="graticule" isCheckable="true" canToggle="true" icon="Resource/Image/graticule.png" />
+      <separator />
+      <menuItem header="Show MetaObjects" action="metaobjects" groupName="metaobjects" isCheckable="true" canToggle="true" icon="Resource/Image/graticule.png" />
+      <separator />
+      <menuItem header="Show Lights" action="lights" groupName="lights" isCheckable="true" isChecked="true" canToggle="true"  icon="Resource/Image/lighthouse.png" />
+      <separator />
+      <menuItem header="English" action="textlabel" groupName="textlabel" isCheckable="true" icon="Resource/Image/symboltext.png" />
+      <menuItem header="National Language" action="nationallanguagelabel" groupName="textlabel" isCheckable="true" icon="Resource/Image/nationalsymboltext.png"/>
+      <menuItem header="None" action="notextlabel" groupName="textlabel" isCheckable="true" isChecked="true" icon="Resource/Image/nosymboltext.png"/>
+      <separator />
+      <menuItem header="Contour Text" action="contourlabel" groupName="contourlabel" isCheckable="true" isChecked="true" canToggle="true" icon="Resource/Image/contourtext.png" />
+      <menuItem header="Sounding Text" action="soundinglabel" groupName="soundinglabel" isCheckable="true" isChecked="true" canToggle="true" icon="Resource/Image/soundingtext.png" />
+      <menuItem header="Light Description" action="lightdescription" groupName="lightdescription" isCheckable="true" isChecked="true" canToggle="true" icon="Resource/Image/lighthouse_text.png" />
+      <separator />
+      <menuItem header="Blank Map" action="none" groupName="showworldmap" isCheckable="true" icon="Resource/Image/blank_map.png" />
+      <menuItem header="Street Map" action="streetmap" groupName="showworldmap" isCheckable="true" isChecked="true" icon="Resource/Image/street.png" />
+      <menuItem header="Aerial" action="aerial" groupName="showworldmap" isCheckable="true" icon="Resource/Image/aerial.png" />
+      <menuItem header="Aerial With Labels" action="aerialwithlabels" groupName="showworldmap" isCheckable="true" icon="Resource/Image/hybird.png" />
+    </menuItems>
+  </menu>
+
+  <menu header="VIEW">
+    <menuItems>
+      <menuItem header="Safe Water Options..." action="safewaterdepth" groupName="safewaterdepth" />
+      <separator />
+      <menuItem header="Show All" action="all" groupName="displaycategory" isCheckable="true" isChecked="true" icon="Resource/Image/all_layers.png" />
+      <menuItem header="Show Standard" action="standard" groupName="displaycategory" isCheckable="true" icon="Resource/Image/standard_layers.png" />
+      <menuItem header="Show Base" action="baselayer" groupName="displaycategory" isCheckable="true" icon="Resource/Image/base_layers.png" />
+      <separator />
+      <menuItem header="Day Bright" action="daybright" groupName="colorschema" isCheckable="true" isChecked="true" icon="Resource/Image/daybright.png" />
+      <menuItem header="Day Black" action="dayblackback" groupName="colorschema" isCheckable="true"  icon="Resource/Image/dayblackback.png" />
+      <menuItem header="Day White" action="daywhiteback" groupName="colorschema" isCheckable="true"  icon="Resource/Image/daywhiteback.png" />
+      <menuItem header="Dusk" action="dusk" groupName="colorschema" isCheckable="true"  icon="Resource/Image/dusk.png" />
+      <menuItem header="Night" action="night" groupName="colorschema" isCheckable="true"  icon="Resource/Image/night.png" />
+      <separator />
+      <menuItem header="Simplified" action="simplified" groupName="s52pointdrawingmode" isCheckable="true" isChecked="true"  icon="Resource/Image/simplified.png" />
+      <menuItem header="Paper Chart" action="paperchart" groupName="s52pointdrawingmode" isCheckable="true" icon="Resource/Image/paperchart.png" />
+      <separator />
+      <menuItem header="Symbolized Boundaries" action="Symbolized" groupName="s52areadrawingmode" isCheckable="true" icon="Resource/Image/symbolizedboundaries.png" />
+      <menuItem header="Plain Boundaries" action="Plain" groupName="s52areadrawingmode" isCheckable="true" isChecked="true" icon="Resource/Image/plainboundaries.png" />
+      <separator />
+
+      <menuItem header="Optimized Performance" action="optimized" groupName="performancemode" isCheckable="true" isChecked="true" />
+      <menuItem header="High Drawing Speed" action="hightspeed" groupName="performancemode" isCheckable="true" />
+      <menuItem header="High Image Quality" action="hightquality" groupName="performancemode" isCheckable="true" />
+    </menuItems>
+  </menu>
+
+  <menu header="HELP">
+    <menuItems>
+      <menuItem header="Help?" action="thinkgeohomepage" groupName="homepage" />
+    </menuItems>
+  </menu>
+</menuSet>

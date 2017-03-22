@@ -1,0 +1,136 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:NauticalChartsViewer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
+        x:Class="NauticalChartsViewer.ChartsManagmentWindow"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        xmlns:local="clr-namespace:NauticalChartsViewer"
+        Title="Charts Managment" Height="320" Width="500">
+    <Window.Resources>
+        <local:BooleanToVisibilityValueConverter x:Key="booleanToVisibilityValueConverter" />
+        <Style x:Key="HeaderedContentControlStyle" TargetType="{x:Type HeaderedContentControl}">
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <ContentPresenter ContentSource="Header" Grid.Row="0" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                            <ContentPresenter Grid.Row="1" Margin="{TemplateBinding Padding}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListBox ItemsSource="{Binding Charts}"
+                 IsSynchronizedWithCurrentItem="True"
+			     BorderBrush="{DynamicResource DefaultSeparatorBrush}"
+                 SelectedItem="{Binding SelectedItem}"
+                 SelectionMode="Extended"
+			Margin="6,7,6,8" SelectionChanged="ListBox_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type model:ChartItem}">
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <Command:EventToCommand Command="{Binding DoubleClickCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
+            <Button Style="{StaticResource OperationButtonStyle}" Width="86" Content="Load File" Command="{Binding LoadCommand}" />
+            <Button Style="{StaticResource OperationButtonStyle}" Width="86" Content="Unload" Command="{Binding UnloadCommand}" Margin="0 5 0 10" />
+            <Button Style="{StaticResource OperationButtonStyle}" Width="86" Content="Load Directory" Command="{Binding LoadDirectoryCommand}" />
+        </StackPanel>
+
+        <Grid Grid.Column="2" Margin="6,7,6,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="70" />
+            </Grid.RowDefinitions>
+
+            <Border BorderBrush="{DynamicResource DefaultSeparatorBrush}" BorderThickness="1" Grid.RowSpan="3" />
+            <HeaderedContentControl Style="{DynamicResource HeaderedContentControlStyle}">
+                <HeaderedContentControl.Header>
+                    <Grid>
+                        <Label Content="BoundingBox:" FontSize="14" />
+                    </Grid>
+                </HeaderedContentControl.Header>
+                <Grid DataContext="{Binding SelectedItem.BoundingBox}">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="HorizontalAlignment" Value="Left" />
+                        </Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource InputTextBoxStyle}">
+                            <Setter Property="IsReadOnly" Value="True" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Left:" Grid.Row="0" Grid.Column="0" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding LowerLeftPoint.X}" />
+
+                    <Label Content="Right:" Grid.Row="1" Grid.Column="0" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UpperRightPoint.X}" />
+
+                    <Label Content="Up:" Grid.Row="2" Grid.Column="0" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UpperRightPoint.Y}" />
+
+                    <Label Content="Bottom:" Grid.Row="3" Grid.Column="0" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding LowerLeftPoint.Y}" />
+                </Grid>
+            </HeaderedContentControl>
+
+            <Line Grid.Row="1" Stretch="Fill" Stroke="{DynamicResource DefaultSeparatorBrush}" X2="1" />
+            <TextBlock Grid.Row="2" Margin="5,0"><Run Text="1. Double-click any item to load the chart." /><LineBreak /><Run Text="2. Click any item to check its details." /><LineBreak /></TextBlock>
+        </Grid>
+
+        <Line Grid.Row="1" Grid.ColumnSpan="3" Margin="6 2" Stretch="Fill" Stroke="{DynamicResource DefaultSeparatorBrush}" X2="1" VerticalAlignment="Top" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="3" Margin="0,8,6,8">
+
+            <Button  Style="{StaticResource OperationButtonStyle}"
+				Margin="11, 0"
+				Command="{Binding OkCommand}" Content="OK" />
+
+            <Button  Style="{StaticResource OperationButtonStyle}"
+				Command="{Binding CancelCommand}" Content="Cancel" />
+        </StackPanel>
+
+        <local:BusyIndicator Grid.Row="2" Grid.ColumnSpan="2" BusyMessage="Create Index..." Margin="5" Visibility="{Binding IsProgressBarVisible, Converter={StaticResource booleanToVisibilityValueConverter}}" />
+    </Grid>
+</Window>

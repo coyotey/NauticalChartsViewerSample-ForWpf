@@ -1,0 +1,138 @@
+﻿<UserControl x:Class="NauticalChartsViewer.LookupTableView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:uc="clr-namespace:NauticalChartsViewer"
+             xmlns:local="clr-namespace:ThinkGeo.MapSuite;assembly=S52PresentationResource"
+             mc:Ignorable="d"
+             d:DesignHeight="460" d:DesignWidth="700">
+    <UserControl.Resources>
+        <x:Array x:Key="Radars" Type="{x:Type System:Char}">
+            <System:Char>O</System:Char>
+            <System:Char>S</System:Char>
+        </x:Array>
+
+        <x:Array x:Key="DisplayCategories" Type="{x:Type System:String}">
+            <System:String>OTHER</System:String>
+            <System:String>STANDARD</System:String>
+            <System:String>DISPLAYBASE</System:String>
+            <System:String>MARINERS STAND</System:String>
+            <System:String>MARINERS OTHER</System:String>
+        </x:Array>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="224" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.ColumnSpan="3" Margin="0,7,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Lookup Table:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <ComboBox x:Name="cmbLookupTables" Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding LookupTableTypes}"
+                      SelectedValue="{Binding SelectedLookupTableType}" 
+                      IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
+                      Margin="5,0"/>
+
+            <TextBox Grid.Column="2" Text="{Binding SearchLookup, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="5,0"
+                     IsEnabled="{Binding IsEnabled}" Height="{Binding Path=ActualHeight, ElementName=cmbLookupTables}" />
+            <Button Grid.Column="3" Content="Search" Command="{Binding SearchCommand}" Margin="5,0"
+                    VerticalAlignment="Center"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1" Margin="5,0"  ItemsSource="{Binding LookupItems}" SelectedItem="{Binding SelectedLookupItem}"
+                      CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding ObjectClass}" Width="Auto" />
+                <DataGridTextColumn Header="Display Category" Binding="{Binding DisplayCategory}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,0" DataContext="{Binding EditionLookupItem}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" MinWidth="98" />
+                <ColumnDefinition Width="161*" />
+                <ColumnDefinition Width="auto" MinWidth="98" />
+                <ColumnDefinition Width="161*" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+            </Grid.Resources>
+            <Label Grid.Row="0" Grid.Column="0" Content="Object Class:" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ObjectClass}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Margin="0,5" />
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Style Name:" />
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding StyleName}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Margin="0,5" />
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Table Comment:" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comments}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Margin="0,5" />
+
+            <Label Grid.Row="1" Grid.Column="2" Content="Display Priority:" />
+            <uc:NumericTextBox Grid.Row="1" Grid.Column="3"
+                               IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEnabled}"
+                                MaxValue="9" MinValue="0"
+                                Value="{Binding DisplayPriority, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                Increment="1" Margin="0,5" />
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Radar Priority:" />
+            <ComboBox Grid.Row="2" Grid.Column="1"  IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEnabled}"
+                      ItemsSource="{StaticResource Radars}" SelectedValue="{Binding RadarPriority, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"  Margin="0,5"></ComboBox>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Display Category:" />
+            <ComboBox Grid.Row="2" Grid.Column="3"  IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEnabled}"
+                      ItemsSource="{StaticResource DisplayCategories}" SelectedValue="{Binding DisplayCategory, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"  Margin="0,5"></ComboBox>
+
+            <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Attributes">
+                <DataGrid ItemsSource="{Binding EditionAttributes}"
+                      CanUserAddRows="False" AutoGenerateColumns="False" HeadersVisibility="None">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Key,Mode=OneWay}" />
+                        <DataGridTextColumn Binding="{Binding Value}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Header="Instruction" Margin="5,0,0,0">
+                <DataGrid ItemsSource="{Binding EditionInstructions}"
+                      CanUserAddRows="False" AutoGenerateColumns="False" HeadersVisibility="None">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding StringField}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+
+        <Line Grid.Row="2" Grid.ColumnSpan="3" Stroke="{StaticResource DefaultSeparatorBrush}" X2="2" Stretch="Fill" Margin="0,5" />
+        <Grid Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="0,8,11,8" Content="Commit" Command="{Binding CommitCommand}" />
+            <Button Grid.Column="1" Margin="0,8,6,8" Content="Cancel" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.CancelCommand}" />
+        </Grid>
+    </Grid>
+</UserControl>

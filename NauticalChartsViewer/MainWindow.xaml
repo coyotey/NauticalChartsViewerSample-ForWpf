@@ -1,0 +1,355 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.ignore.com"
+        xmlns:local="clr-namespace:NauticalChartsViewer"
+        xmlns:WpfDesktopEdition="clr-namespace:ThinkGeo.MapSuite.Wpf;assembly=ThinkGeo.MapSuite.Wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
+        x:Class="NauticalChartsViewer.MainWindow"
+        mc:Ignorable="d ignore"
+        MinHeight="600"
+        MinWidth="800"
+        Icon="NauticalCharts.ico"
+        Title="Nautical Charts Viewer"
+    Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <local:TextToVisibleValueConverter x:Key="textToVisibilityConverter" />
+        <local:StringToNATextValueConverter x:Key="stringToNATextValueConverter" />
+        <local:BooleanToVisibilityValueConverter x:Key="booleanToVisibilityValueConverter" />
+        <local:DictionaryToStringValueConverter x:Key="dictionaryToStringValueConverter"/>
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}" />
+            <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+            <Setter Property="Command" Value="{Binding CheckedCommand}" />
+        </Style>
+        <Style x:Key="HeaderedContentControlStyle" TargetType="{x:Type HeaderedContentControl}">
+            <Setter Property="Margin" Value="6,7,6,8" />
+            <Setter Property="Padding" Value="0,3,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ContentPresenter ContentSource="Header"
+                                              TextElement.FontWeight="Bold"
+        						              TextElement.FontSize="14" />
+                            <ContentPresenter Grid.Row="1" Margin="{TemplateBinding Padding}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="280" />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding MenuItems, Mode=OneWay}">
+            <Menu.Resources>
+                <DataTemplate DataType="{x:Type local:SingleMenuItem}">
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type local:CompositeMenuItem}" ItemsSource="{Binding Children, Mode=OneWay}">
+                    <TextBlock Text="{Binding Header}" />
+                </HierarchicalDataTemplate>
+            </Menu.Resources>
+        </Menu>
+
+        <StatusBar Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" Grid.ColumnSpan="2" BorderBrush="DarkGray" BorderThickness="0,1" UseLayoutRounding="True">
+            <StatusBar.Resources>
+                <DataTemplate DataType="{x:Type local:SingleMenuItem}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{Binding Icon}"  Stretch="Uniform" />
+                        <Label x:Name="Text" Grid.Column="1" Content="{Binding Header}" />
+                    </Grid>
+                </DataTemplate>
+
+                <Style x:Key="currentOperationToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource mapOperationToggleButtonStyle}">
+                    <Setter Property="Command" Value="{Binding CheckedCommand}" />
+                    <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+                </Style>
+            </StatusBar.Resources>
+            <Button ToolTip="Open File" Style="{StaticResource mapOperationButtonStyle}" Command="{Binding DataContext.ToolBarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="loadcharts">
+                <Button.Content>
+                    <Image Source="Resource/Image/layers.png" Focusable="False" />
+                </Button.Content>
+            </Button>
+
+            <Separator Style="{StaticResource ToolbarSeparatorStyle}" />
+            <RadioButton Style="{StaticResource mapOperationRadioButtonStyle}" ToolTip="Pan Map" IsChecked="True">
+                <RadioButton.Content>
+                    <Image x:Name="image" Source="Resource/Image/pan.png" Focusable="False" Stretch="None" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Style="{StaticResource mapOperationRadioButtonStyle}" ToolTip="Identify Feature" IsChecked="{Binding IsIdentify}">
+                <RadioButton.Content>
+                    <Image Source="Resource/Image/identify.png" Focusable="False" />
+                </RadioButton.Content>
+            </RadioButton>
+            <Button Style="{StaticResource mapOperationButtonStyle}" ToolTip="Clear the Selected" Command="{Binding ClearSelectionCommand}">
+                <Button.Content>
+                    <Image Source="Resource/Image/clear.png" Focusable="False" />
+                </Button.Content>
+            </Button>
+
+            <Separator Style="{StaticResource ToolbarSeparatorStyle}" />
+            <ComboBox x:Name="cmbBaseMap" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding BaseMaps}" SelectedItem="{Binding SelectedBaseMap}"
+                      Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+            <ToggleButton DataContext="{Binding ShowingGradicule}" IsChecked="{Binding IsChecked}">
+                <ToggleButton.Content>
+                    <Image Source="{Binding Icon}" Focusable="False" />
+                </ToggleButton.Content>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource currentOperationToggleButtonStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="ToolTip" Value="Show Gradicule"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="Hide Gradicule"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <ToggleButton  DataContext="{Binding ShowLights}">
+                <ToggleButton.Content>
+                    <Image Source="{Binding Icon}" Focusable="False" />
+                </ToggleButton.Content>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource currentOperationToggleButtonStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="ToolTip" Value="Show Lights"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="Hide Lights"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <Separator Style="{StaticResource ToolbarSeparatorStyle}" />
+
+            <ComboBox x:Name="cmbColorSchema" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding ColorSchemas}" SelectedItem="{Binding SelectedColorSchema}" Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+            <ComboBox x:Name="cmbDisplayCategory" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding DisplayCategorys}" SelectedItem="{Binding SelectedDisplayCategory}"
+                      Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+            <ComboBox x:Name="cmbAreaDrawingMode" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding AreaDrawingModes}" SelectedItem="{Binding SelectedAreaDrawingMode}"
+                      Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+
+            <ComboBox x:Name="cmbPointDrawingMode" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding PointDrawingModes}" SelectedItem="{Binding SelectedPointDrawingMode}"
+                      Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+            <Separator Style="{StaticResource ToolbarSeparatorStyle}" />
+
+            <ComboBox x:Name="cmbSymbolTextModes" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.Header}"
+                      ItemsSource="{Binding SymbolLabels}" SelectedItem="{Binding SelectedSymbolLabel}"
+                      Style="{StaticResource mapOperationComboBoxStyle}">
+            </ComboBox>
+            <ToggleButton DataContext="{Binding ShowLightDescriptions}" IsChecked="{Binding IsChecked}">
+                <ToggleButton.Content>
+                    <Image Source="{Binding Icon}" Focusable="False" />
+                </ToggleButton.Content>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource currentOperationToggleButtonStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="ToolTip" Value="Show Light Description"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="Hide Light Description"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <ToggleButton DataContext="{Binding ShowContourText}">
+                <ToggleButton.Content>
+                    <Image Source="{Binding Icon}" Focusable="False" />
+                </ToggleButton.Content>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource currentOperationToggleButtonStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="ToolTip" Value="Show Contour Label"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="Hide Contour Label"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <ToggleButton DataContext="{Binding ShowSoundingText}">
+                <ToggleButton.Content>
+                    <Image Source="{Binding Icon}" Focusable="False" />
+                </ToggleButton.Content>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource currentOperationToggleButtonStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="ToolTip" Value="Show Sounding Label"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="Hide Sounding Label"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+
+        </StatusBar>
+        <WpfDesktopEdition:WpfMap x:Name="WpfMap" x:FieldModifier="private" Grid.Row="2" CurrentScaleChanging="WpfMap_CurrentScaleChanging" MouseMove="WpfMap_MouseMove" />
+        <local:LoadingAnimation Grid.Row="2" Visibility="{Binding IsOnLoading,Converter={StaticResource booleanToVisibilityValueConverter}}"></local:LoadingAnimation>
+
+        <Border Grid.Row="2" Width="300"
+                Margin="6 7 6 8"
+                Padding="6 7 6 8"
+                BorderThickness="1"
+                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                BorderBrush="DarkGray"
+              Visibility="{Binding ShowOpacityPanel, Converter={StaticResource booleanToVisibilityValueConverter}}"
+              VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Grid
+                Width="288">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border Grid.ColumnSpan="4" />
+                <TextBlock  Grid.Column="0" VerticalAlignment="Center" Margin="0 0 4 0" Grid.ColumnSpan="1">Opacity:</TextBlock>
+                <Slider x:Name="OpacityRanger" Grid.Column="1"  VerticalAlignment="Top" Value="{Binding OverlayOpacity,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.05"  TickFrequency="0.05" TickPlacement="BottomRight" />
+                <local:NumericTextBox Margin="4 0 0 0" Grid.Column="2" Increment="0.05" MinValue="0" MaxValue="1" Value="{Binding OverlayOpacity, StringFormat={}{0:F2}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></local:NumericTextBox>
+                <Button HorizontalAlignment="Right"  Grid.Column="3"  Cursor="Hand" Width="15" Height="15" Margin="4 0 1 0" ToolTip="Close" Command="{Binding OpacityPanelCloseCommand}">
+                    <Button.Content>
+                        <Path Focusable="False" Data="M 0,0 L 1,1 M 0,1 L 1,0" Stretch="Fill" Stroke="Black" Margin="2" />
+                    </Button.Content>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="Transparent"/>
+                                <ContentPresenter HorizontalAlignment="Center" TextElement.FontSize="18" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" Grid.ColumnSpan="2" BorderBrush="{DynamicResource DefaultSeparatorBrush}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
+            <Grid>
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="6,3">
+                    <TextBlock><Run Text="X:  " /><Run x:Name="CurrentX" Text="00.000000" /><Run Text=" " /><Run Text=",Y:  " /><Run x:Name="CurrentY" Text="00.000000" /></TextBlock>
+                    <Line Stretch="Fill" Y1="0" Y2="1" Stroke="{StaticResource DefaultSeparatorBrush}" StrokeThickness="1" Margin="10,0" />
+                    <TextBlock Margin="0,0,5,0"><Run Text="Scale:" /><Run Text=" " /><Run x:Name="CurrentScale" /></TextBlock>
+                </StackPanel>
+
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0">Copyright © 2015 ThinkGeo LLC</TextBlock>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+            <Grid.Resources>
+                <Style TargetType="{x:Type ListBox}">
+                    <Setter Property="BorderThickness" Value="0" />
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <Border Grid.RowSpan="2" BorderThickness="1,0,0,0" BorderBrush="{DynamicResource DefaultSeparatorBrush}" />
+            <HeaderedContentControl DataContext="{Binding ChartSelectedItem}"  Grid.Row="0" Style="{StaticResource HeaderedContentControlStyle}">
+                <Grid Margin="0,0,7,0">
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Height" Value="20" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="ENC File Name:" Grid.Row="0" />
+                    <TextBlock TextWrapping="WrapWithOverflow" Grid.Row="0" Grid.Column="1" Text="{Binding Name, Mode=OneWay, Converter={StaticResource stringToNATextValueConverter}}" />
+
+                    <TextBlock Text="Updates Applied:   " Grid.Row="1" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UpdatedFilesCount, Mode=OneWay}" />
+                </Grid>
+            </HeaderedContentControl>
+
+            <HeaderedContentControl DataContext="{Binding ChartSelectedItem}" Header="Feature Info" Grid.Row="1" Style="{StaticResource HeaderedContentControlStyle}">
+                <ListBox x:Name="features" ItemsSource="{Binding FeatureInfoItems}" SelectedItem="{Binding DataContext.SelectedFeatureInfo, RelativeSource={RelativeSource AncestorType=Window}}" BorderBrush="{DynamicResource DefaultSeparatorBrush}" BorderThickness="1">
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Margin" Value="6,5,0,0" />
+                        </Style>
+                    </ListBox.Resources>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Rectangle Width="2" Margin="0,0,3,0" Fill="#FFF7A5A5" />
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock TextWrapping="WrapWithOverflow">
+                                    <Run Text="Id:" />
+                                    <Run Text="{Binding Id, Mode=OneWay}" />
+                                    </TextBlock>
+                                    <TextBlock TextWrapping="WrapWithOverflow">
+                                    <Run Text="Geometry:" />
+                                    <Run Text="{Binding Geometry, Mode=OneWay}" />
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding ColumnValues, Converter={StaticResource dictionaryToStringValueConverter}}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </HeaderedContentControl>
+        </Grid>
+    </Grid>
+</Window>

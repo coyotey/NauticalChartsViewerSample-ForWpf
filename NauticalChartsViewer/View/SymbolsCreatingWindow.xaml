@@ -1,0 +1,44 @@
+﻿<Window x:Class="NauticalChartsViewer.SymbolsCreatingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        xmlns:local="clr-namespace:NauticalChartsViewer"
+        WindowStyle="ToolWindow"
+        Title="Create Symbol File"
+        Width="455"
+        SizeToContent="Height">
+    <Window.Resources>
+        <local:BooleanToVisibilityValueConverter x:Key="booleanToVisibilityValueConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label Content="DAI File Path:" VerticalAlignment="Center" />
+        <TextBox Grid.Column="1" Text="{Binding DaiFilePath}" IsReadOnly="True" VerticalAlignment="Center" Width="Auto" Margin="0 0 6 0" />
+        <Button Content="..." Grid.Column="2" VerticalAlignment="Center" Margin="0 0 6 0"  Width="30" Command="{Binding DAIFileBrowerCommand}" />
+
+        <Label Grid.Row="1" Content="Output File Path:" VerticalAlignment="Center" Margin="0 0 6 0" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OutputFilePath}" IsReadOnly="True" Width="Auto" VerticalAlignment="Center" Margin="0 0 6 0" />
+        <Button Content="..." Grid.Row="1" Grid.Column="2" Width="30" Command="{Binding SavePathCommand}" Margin="0 0 6 0" VerticalAlignment="Center" />
+
+        <Line Grid.Row="3" Grid.ColumnSpan="3" X2="1" Stretch="Fill" Stroke="{StaticResource DefaultSeparatorBrush}" />
+
+        <CheckBox Grid.Column="0" Grid.Row="4" Content="Rebuild" IsChecked="{Binding IsRebuild}" VerticalAlignment="Center" Margin="6 0" />
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="6 8 6 8" HorizontalAlignment="Right">
+            <Button x:Name="btnYes" Content="OK" Command="{Binding CreateCommand}" />
+            <Button x:Name="btnNo" Content="Cancel" IsCancel="True" Margin="11 0 0 0" Command="{Binding CancelCommand}" />
+        </StackPanel>
+        <local:BusyIndicator BusyMessage="Create Index..." HorizontalAlignment="Left" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="1" VerticalAlignment="Center" Visibility="{Binding IsProgressBarVisible, Converter={StaticResource booleanToVisibilityValueConverter}}" />
+    </Grid>
+</Window>

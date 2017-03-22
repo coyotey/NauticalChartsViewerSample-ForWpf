@@ -1,0 +1,41 @@
+﻿<Window x:Class="NauticalChartsViewer.SymbolsEditionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterOwner"
+        xmlns:local="clr-namespace:NauticalChartsViewer"
+        Height="480" Width="710"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        Title="Edit Symbol">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="236*" />
+            <ColumnDefinition Width="17*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.ColumnSpan="2" Margin="3,7,6,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Nautical Charts Style File:" />
+            <TextBox Grid.Column="1" Height="{Binding ActualHeight, ElementName=btnBrowser}" Text="{Binding S52SymbolsSourcePath, UpdateSourceTrigger=PropertyChanged}" Margin="5,0" VerticalAlignment="Center"/>
+            <Button x:Name="btnBrowser" Content="..." Grid.Column="2" Margin="5,0,8,0" Width="30" Command="{Binding S52ResourceBrowerCommand}" VerticalAlignment="Center" />
+        </Grid>
+        <TabControl Grid.Row="1" Grid.ColumnSpan="2">
+            <TabItem Header="Color Tables">
+                <local:ColorTableView DataContext="{Binding ColorTable}"  />
+            </TabItem>
+            <TabItem Header="Symbols" HorizontalAlignment="Right" Width="61">
+                <local:SymbolTableView DataContext="{Binding SymbolTable}" />
+            </TabItem>
+            <TabItem Header="Lookup Tables" Margin="0,-2,-2,0" HorizontalAlignment="Right" Width="89">
+                <local:LookupTableView DataContext="{Binding LookupTable}"  />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
