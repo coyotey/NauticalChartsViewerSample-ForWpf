@@ -6,6 +6,8 @@ This tool takes use of Map Suite HydrographyExtension to display ENC data in com
 
 NOTE: the styling file “NauticalCharts.xml” for drawing S-57 (*.000) file is included in the source code package.
 
+Please refer to [Wiki](http://wiki.thinkgeo.com/wiki/map_suite_desktop_for_wpf) for the details.
+
 ![Screenshot](https://github.com/ThinkGeo/NauticalChartsViewerSample-ForWpf/blob/master/Screenshot.png)
 
 ### Requirements
@@ -19,9 +21,9 @@ Working...
 
 ### Getting Help
 
-[Map Suite Wpf Wiki Resources](http://wiki.thinkgeo.com/wiki/map_suite_wpf_desktop_edition)
+[Map Suite Wpf Wiki Resources](http://wiki.thinkgeo.com/wiki/map_suite_desktop_for_wpf)
 
-[Map Suite Wpf Product Description](http://thinkgeo.com/map-suite-developer-gis/wpf-edition/)
+[Map Suite Wpf Product Description](https://thinkgeo.com/ui-controls#desktop-platforms)
 
 [ThinkGeo Community Site](http://community.thinkgeo.com/)
 
