@@ -4,7 +4,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:Command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras" x:Class="NauticalChartsViewer.SafeWaterDepthSettingsWindow"
         ResizeMode="NoResize"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:extension="clr-namespace:ThinkGeo.MapSuite.Core;assembly=NauticalChartsExtension"
         Title="Safe Water Depth Settings"
         WindowStartupLocation="CenterOwner"
         SizeToContent="Height"
