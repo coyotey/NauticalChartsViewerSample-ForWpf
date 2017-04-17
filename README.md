@@ -1,4 +1,4 @@
-# Nautical Charts Viewer for Wpf
+# Nautical Charts Viewer Sample for Wpf
 
 ### Description
 Today’s project is a tool of ENC Viewer for displaying unencrypted Electronic Navigational Charts (ENCs) available in the S-57 exchange format (*.000). 
@@ -13,7 +13,7 @@ Please refer to [Wiki](http://wiki.thinkgeo.com/wiki/map_suite_desktop_for_wpf) 
 ### Requirements
 This sample makes use of the following NuGet Packages
 
-[MapSuite 10.0.0.0](https://www.nuget.org/packages?q=ThinkGeo)
+[MapSuite 10.0.0](https://www.nuget.org/packages?q=ThinkGeo)
 
 ### About the Code
 
@@ -21,9 +21,9 @@ Working...
 
 ### Getting Help
 
-[Map Suite Wpf Wiki Resources](http://wiki.thinkgeo.com/wiki/map_suite_desktop_for_wpf)
+[Map Suite Desktop for Wpf Wiki Resources](http://wiki.thinkgeo.com/wiki/map_suite_desktop_for_wpf)
 
-[Map Suite Wpf Product Description](https://thinkgeo.com/ui-controls#desktop-platforms)
+[Map Suite Desktop for Wpf Product Description](https://thinkgeo.com/ui-controls#desktop-platforms)
 
 [ThinkGeo Community Site](http://community.thinkgeo.com/)
 
